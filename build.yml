@@ -1,0 +1,35 @@
+name: Build NumWorks App
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install ARM GCC Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi
+
+    - name: Build Application (.nwa)
+      run: |
+        make build
+
+    - name: Upload .nwa Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: zombie-tsunami-nwa
+        path: output/app.nwa
